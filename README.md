@@ -25,8 +25,11 @@ postcssPx2vwExclude({
     }),
 ```
 > `exclude` 接收 文件夹名/文件名(带后缀);
+
 > `exclude` 配置优先级大于`rules`对象中的`path`，`rules`配置会被直接排除;
+
 > `rules` 接收对象，`path`为生效路径，不做配置或为空默认全局生效，参数同`exclude`;
+
 > `rules.fn` 自定义转换规则，返回转换后的数值，没有返回值则不生效！，`pixels`：原始像素数值,`vw`：正常转换后的vw值,`opt`：上方填写的配置参数；
 
 
