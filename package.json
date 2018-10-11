@@ -22,7 +22,8 @@
     "vmin",
     "vmax",
     "postcss",
-    "postcss-plugin"
+    "postcss-plugin",
+    "postcss-px-to-viewport-exclude"
   ],
   "dependencies": {
     "object-assign": "^4.0.1",
