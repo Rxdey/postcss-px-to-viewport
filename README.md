@@ -1,6 +1,34 @@
 # postcss-px-to-viewport [![NPM version](https://badge.fury.io/js/postcss-px-to-viewport.svg)](http://badge.fury.io/js/postcss-px-to-viewport)
 
 A plugin for [PostCSS](https://github.com/ai/postcss) that generates viewport units (vw, vh, vmin, vmax) from pixel units.
+> 基于[evrone/postcss-px-to-viewport](https://github.com/evrone/postcss-px-to-viewport)修改
+* 增加下方配置解决第三方ui库转换后缩小的问题
+* 增加`exclude`排除文件配置
+* 增加`rules` 自定义转换规则配置
+
+```javascript
+# 配置参数
+postcssPx2vwExclude({
+      viewportWidth: 750,  
+      unitPrecision: 5,  
+      viewportUnit: 'vw',  
+      selectorBlackList: ['.ignore'],  
+      minPixelValue: 1,
+      mediaQuery: false,
+      exclude: ['node_modules'],
+      rules: {
+        path: 'node_modules',
+        fn: (pixels, vw, opt) => {
+          return vm*2 + 'vw';
+        },
+      },
+    }),
+```
+> `exclude` 接收 文件夹名/文件名(带后缀);
+> `exclude` 配置优先级大于`rules`对象中的`path`，`rules`配置会被直接排除;
+> `rules` 接收对象，`path`为生效路径，不做配置或为空默认全局生效，参数同`exclude`;
+> `rules.fn` 自定义转换规则，返回转换后的数值，没有返回值则不生效！，`pixels`：原始像素数值,`vw`：正常转换后的vw值,`opt`：上方填写的配置参数；
+
 
 ## Usage
 
