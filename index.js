@@ -20,10 +20,10 @@ var defaults = {
   minPixelValue: 1,
   mediaQuery: false,
   exclude: [],
-  rules: {},
+  rules: {path:'',fn:()=>{}},
 };
 
-module.exports = postcss.plugin('postcss-px2vw-exclude', function(options) {
+module.exports = postcss.plugin('postcss-px-to-viewport-rxdey', function(options) {
   var opts = objectAssign({}, defaults, options);
   var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit, opts.rules);
   return function(css) {

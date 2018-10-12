@@ -21,7 +21,7 @@ A plugin for [PostCSS](https://github.com/ai/postcss) that generates viewport un
       rules: {
         path: 'node_modules',
         fn: (pixels, vw, opt) => {
-          return vm*2 + 'vw';
+          return vw*2 + 'vw';
         },
       },
     },
