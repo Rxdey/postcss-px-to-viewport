@@ -20,12 +20,13 @@ var defaults = {
   minPixelValue: 1,
   mediaQuery: false,
   exclude: [],
+  multiple: 100, // 转换倍数
   rules: {path:'',fn:()=>{}},
 };
 
 module.exports = postcss.plugin('postcss-px-to-viewport-rxdey', function(options) {
   var opts = objectAssign({}, defaults, options);
-  var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit, opts.rules);
+  var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit, opts.rules, opts.multiple);
   return function(css) {
     var path = css.source.input.file;
     var rulesPath =opts.rules.path?blacklistedPath(opts.rules.path,path):true;  // 指定了路径 只对路径下生效
@@ -46,17 +47,17 @@ module.exports = postcss.plugin('postcss-px-to-viewport-rxdey', function(options
   };
 });
 
-function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUnit, rules, ) {
+function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUnit, rules, multiple ) {
   return function(rulesPath){
     return function(m, $1) {
       if (!$1) return m;
       var pixels = parseFloat($1);
       if (pixels <= minPixelValue) return m;
-      var opt = { viewportSize, minPixelValue, unitPrecision, viewportUnit };
+      var opt = { viewportSize, minPixelValue, unitPrecision, viewportUnit, multiple };
       if (JSON.stringify(rules.fn(pixels, opt))&&rulesPath) {   // 是否自定义规则 自定义规则必须带有返回值
-        return rules.fn(pixels, toFixed((pixels / viewportSize) * 100, unitPrecision), opt);
+        return rules.fn(pixels, toFixed((pixels / viewportSize) * multiple, unitPrecision));
       }
-      return toFixed((pixels / viewportSize) * 100, unitPrecision) + viewportUnit;
+      return toFixed((pixels / viewportSize) * multiple, unitPrecision) + viewportUnit;
     };
   }
 }
