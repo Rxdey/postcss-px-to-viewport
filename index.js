@@ -54,10 +54,11 @@ function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUni
       var pixels = parseFloat($1);
       if (pixels <= minPixelValue) return m;
       var opt = { viewportSize, minPixelValue, unitPrecision, viewportUnit, multiple };
-      if (JSON.stringify(rules.fn(pixels, opt))&&rulesPath) {   // 是否自定义规则 自定义规则必须带有返回值
-        return rules.fn(pixels, toFixed((pixels / viewportSize) * multiple, unitPrecision));
+      var vm = toFixed((pixels / viewportSize) * multiple, unitPrecision);
+      if (JSON.stringify(rules.fn(pixels, vm)) && rulesPath) {   // 是否自定义规则 自定义规则必须带有返回值
+        return rules.fn(pixels, vm);
       }
-      return toFixed((pixels / viewportSize) * multiple, unitPrecision) + viewportUnit;
+      return vm + viewportUnit;
     };
   }
 }
