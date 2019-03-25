@@ -81,9 +81,9 @@ function blacklistedPath(blacklist, path) {
     blacklist = [blacklist];
   }
   if (!blacklist.length) return false;
-  // var pathArray = path.split('\\'); // Get filepath
+  var pathArray = path.split(/[\/|\\]/); // Get filepath
   var isBlack = blacklist.some(item => {
-    return path.indexOf(item) !== -1;
+    return pathArray.indexOf(item) !== -1;
   });
   return isBlack;
 }
