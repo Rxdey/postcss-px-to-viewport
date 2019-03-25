@@ -29,7 +29,7 @@ module.exports = postcss.plugin('postcss-px-to-viewport-rxdey', function(options
   var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit, opts.rules, opts.multiple);
   return function(css) {
     var path = css.source.input.file;
-    var rulesPath =opts.rules.path?blacklistedPath(opts.rules.path,path):true;  // 指定了路径 只对路径下生效
+    var rulesPath =opts.rules.path?blacklistedPath(opts.rules.path, path):true;  // 指定了路径 只对路径下生效
     var r = pxReplace(rulesPath)
     css.walkDecls(function(decl, i) {
       if (decl.value.indexOf('px') === -1) return;
@@ -53,7 +53,6 @@ function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUni
       if (!$1) return m;
       var pixels = parseFloat($1);
       if (pixels <= minPixelValue) return m;
-      var opt = { viewportSize, minPixelValue, unitPrecision, viewportUnit, multiple };
       var vm = toFixed((pixels / viewportSize) * multiple, unitPrecision);
       if (JSON.stringify(rules.fn(pixels, vm)) && rulesPath) {   // 是否自定义规则 自定义规则必须带有返回值
         return rules.fn(pixels, vm);
@@ -82,9 +81,9 @@ function blacklistedPath(blacklist, path) {
     blacklist = [blacklist];
   }
   if (!blacklist.length) return false;
-  var pathArray = path.split('\\'); // Get filepath
+  // var pathArray = path.split('\\'); // Get filepath
   var isBlack = blacklist.some(item => {
-    return pathArray.includes(item);
+    return path.indexOf(item) !== -1;
   });
   return isBlack;
 }
