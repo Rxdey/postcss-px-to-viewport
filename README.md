@@ -8,6 +8,7 @@ A plugin for [PostCSS](https://github.com/ai/postcss) that generates viewport un
 - 增加`exclude`排除文件配置
 - 增加`rules` 自定义转换规则配置
 - 增加`multiple` 转换倍数
+- 增加`propIgnoreList` 过滤属性列表
 
 ```javascript
 # 配置参数
@@ -20,6 +21,7 @@ A plugin for [PostCSS](https://github.com/ai/postcss) that generates viewport un
       mediaQuery: false,
       exclude: ['node_modules'],
       multiple: 100,
+      propIgnoreList: ['font-size'],
       rules: {
         path: 'vux',
         fn: (pixels, vw) => {
@@ -38,3 +40,5 @@ A plugin for [PostCSS](https://github.com/ai/postcss) that generates viewport un
 > `rules.fn` 自定义转换规则，返回转换后的数值，没有返回值则不生效！，`pixels`：原始像素数值,`vw`：正常转换后的 vw 值,`opt`：上方填写的配置参数；
 
 > `multiple` 转换时的倍数，`(pixels / viewportSize) * 100`原转换公式；
+
+> `propIgnoreList` 过滤属性列表，数组中的样式不会被转换；

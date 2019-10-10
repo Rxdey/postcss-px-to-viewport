@@ -16,9 +16,9 @@ var options = {
   propIgnoreList: ['font-size'],
   minPixelValue: 1,
   multiple: 10,
-  exclude: ['vue-loading-rx'],
+  exclude: ['xxx'],
   rules: {
-    path: ['vant', 'rxui'],
+    path: ['vant', 'vux'],
     fn: function (pixels, vw) {
       return vw * 2 + 'rem';
     }
