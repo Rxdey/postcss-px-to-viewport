@@ -3,13 +3,30 @@
 var fs = require('fs');
 var postcss = require('postcss');
 var pxToViewport = require('..');
-var css = fs.readFileSync('main.css', 'utf8');
+var path = require('path');
+var css = fs.readFileSync(path.resolve(__dirname, 'main.css'), 'utf8');
+// var options = {
+//   replace: false
+// };
 var options = {
-    replace: false
+  viewportWidth: 750,
+  unitPrecision: 3,
+  viewportUnit: 'rem',
+  selectorBlackList: ['.ignore'],
+  propIgnoreList: ['font-size'],
+  minPixelValue: 1,
+  multiple: 10,
+  exclude: ['vue-loading-rx'],
+  rules: {
+    path: ['vant', 'rxui'],
+    fn: function (pixels, vw) {
+      return vw * 2 + 'rem';
+    }
+  }
 };
 var processedCss = postcss(pxToViewport(options)).process(css).css;
 
-fs.writeFile('main-viewport.css', processedCss, function (err) {
+fs.writeFile(path.resolve(__dirname, 'main-viewport.css'), processedCss, function (err) {
   if (err) {
     throw err;
   }

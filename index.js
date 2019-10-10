@@ -18,28 +18,31 @@ var defaults = {
   viewportUnit: 'vw',
   selectorBlackList: [],
   minPixelValue: 1,
+  propIgnoreList: [],
   mediaQuery: false,
   exclude: [],
   multiple: 100, // 转换倍数
-  rules: {path:'',fn:()=>{}},
+  rules: { path: '', fn: () => { } },
 };
 
-module.exports = postcss.plugin('postcss-px-to-viewport-rxdey', function(options) {
+module.exports = postcss.plugin('postcss-px-to-viewport-rxdey', function (options) {
   var opts = objectAssign({}, defaults, options);
   var pxReplace = createPxReplace(opts.viewportWidth, opts.minPixelValue, opts.unitPrecision, opts.viewportUnit, opts.rules, opts.multiple);
-  return function(css) {
+  return function (css) {
     var path = css.source.input.file;
-    var rulesPath =opts.rules.path?blacklistedPath(opts.rules.path, path):true;  // 指定了路径 只对路径下生效
+    var rulesPath = opts.rules.path ? blacklistedPath(opts.rules.path, path) : true;  // 指定了路径 只对路径下生效
     var r = pxReplace(rulesPath)
-    css.walkDecls(function(decl, i) {
+    css.walkDecls(function (decl, i) {
+      console.log(opts.propIgnoreList.indexOf(decl.prop));
       if (decl.value.indexOf('px') === -1) return;
+      if (opts.propIgnoreList.indexOf(decl.prop) !== -1) return;
       if (blacklistedSelector(opts.selectorBlackList, decl.parent.selector))
         return;
       if (blacklistedPath(opts.exclude, path)) return;
       decl.value = decl.value.replace(pxRegex, r);
     });
     if (opts.mediaQuery) {
-      css.walkAtRules('media', function(rule) {
+      css.walkAtRules('media', function (rule) {
         if (rule.params.indexOf('px') === -1) return;
         rule.params = rule.params.replace(pxRegex, r);
       });
@@ -47,9 +50,9 @@ module.exports = postcss.plugin('postcss-px-to-viewport-rxdey', function(options
   };
 });
 
-function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUnit, rules, multiple ) {
-  return function(rulesPath){
-    return function(m, $1) {
+function createPxReplace (viewportSize, minPixelValue, unitPrecision, viewportUnit, rules, multiple) {
+  return function (rulesPath) {
+    return function (m, $1) {
       if (!$1) return m;
       var pixels = parseFloat($1);
       if (pixels <= minPixelValue) return m;
@@ -62,25 +65,25 @@ function createPxReplace(viewportSize, minPixelValue, unitPrecision, viewportUni
   }
 }
 
-function toFixed(number, precision) {
+function toFixed (number, precision) {
   var multiplier = Math.pow(10, precision + 1),
     wholeNumber = Math.floor(number * multiplier);
   return (Math.round(wholeNumber / 10) * 10) / multiplier;
 }
 
-function blacklistedSelector(blacklist, selector) {
+function blacklistedSelector (blacklist, selector) {
   if (typeof selector !== 'string') return;
-  return blacklist.some(function(regex) {
+  return blacklist.some(function (regex) {
     if (typeof regex === 'string') return selector.indexOf(regex) !== -1;
     return selector.match(regex);
   });
 }
 
-function blacklistedPath(blacklist, path) {
+function blacklistedPath (blacklist, path) {
   if (typeof blacklist === 'string') {
     blacklist = [blacklist];
   }
-  if (!blacklist.length) return false;
+  if (!blacklist.length || !path) return false;
   var pathArray = path.split(/[\/|\\]/); // Get filepath
   return blacklist.some(item => {
     return pathArray.indexOf(item) !== -1;
